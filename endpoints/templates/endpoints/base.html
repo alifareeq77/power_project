@@ -1,15 +1,21 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
-  <head>
+<head>
+    <link rel="stylesheet" type="text/css" href="{% static '/css/base.css' %}">
+    {% block extralinks %}{% endblock %}
     <title>{% block title %}{% endblock %}</title>
-  </head>
-  <body>
+</head>
+<body>
+<div class="nav-container">
     <nav>
-      <a href="{% url 'index' %}">Home</a>
-      <a href="{% url 'login' %}">Log in</a>
+        <ul>
+            <li><a href="{% url 'index' %}">Home</a></li>
+        </ul>
     </nav>
-    <main>
-      {% block content %}{% endblock %}
-    </main>
-  </body>
+</div>
+<main>
+    {% block content %}{% endblock %}
+</main>
+</body>
 </html>
