@@ -1,0 +1,142 @@
+{% extends 'endpoints/base.html' %}
+{% block title %}WIFI SWITCH{% endblock %}
+{% block content %}
+<body>
+    <style>
+        .circle {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: red;
+            transition: all 0.2s ease-out;
+            transform: translate(-50%, -50%);
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+        }
+
+        .container {
+            width: 80%;
+            margin: auto;
+            text-align: center;
+        }
+
+        h1 {
+            margin-top: 50px;
+        }
+
+        .status {
+            margin-top: 50px;
+        }
+
+        .button {
+            margin-top: 50px;
+        }
+
+        button {
+            background-color: #008CBA;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #006B9F;
+        }
+
+        button:active {
+            background-color: #004F72;
+        }
+
+        #switch {
+            background-color: #f44336;
+        }
+
+        #switch:hover {
+            background-color: #da190b;
+        }
+
+        #switch:active {
+            background-color: #b71c1c;
+        }
+    </style>
+<div class="background">
+    <div class="content">
+        <div class="container">
+            <h1>WiFi Switch</h1>
+            <div class="status" id="status">
+                <h3>Current Status: <span id="status">OFF</span></h3>
+            </div>
+            <div class="button">
+                <button id="switch" onclick="sendtoggle()">TURN ON</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    function toggle() {
+        var button = document.getElementById("switch");
+        var status = document.getElementById("status");
+
+        if (button.innerHTML === "TURN ON") {
+            button.innerHTML = "TURN OFF";
+            button.style.backgroundColor = "#4CAF50";
+            status.innerHTML = "ON";
+        } else {
+            button.innerHTML = "TURN ON";
+            button.style.backgroundColor = "#f44336";
+            status.innerHTML = "OFF";
+        }
+    }
+
+    function sendData() {
+        // Define the data to be sent in the request body
+
+        // Make the POST request using fetch()
+        fetch('/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: ''
+        })
+            .then(response => {
+                console.log('Data sent successfully');
+            })
+            .catch(error => {
+                console.error('Error sending data:', error);
+            });
+    }
+    function sendtoggle(){
+        sendData()
+        toggle()
+    }
+    // Replace 'ws://example.com' with the URL of your WebSocket server
+    var ws = new WebSocket(
+        'ws://'
+        + window.location.host
+        + '/ws/esp/'
+        + '{{ token }}'
+        + '/');
+
+    ws.onopen = function () {
+        console.log('Connected to WebSocket server');
+        document.querySelector('p').innerHTML = 'Connected to server';
+    };
+
+    ws.onmessage = function (event) {
+        console.log('Received message: ' + event.data);
+    };
+
+    ws.onclose = function (event) {
+        console.log('Disconnected from WebSocket server');
+    };
+</script>
+{% endblock content %}
