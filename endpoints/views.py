@@ -1,10 +1,8 @@
 from secrets import token_urlsafe
-
 from django.contrib.auth import authenticate, login
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
-
 from endpoints.models import Esp
 
 
@@ -54,5 +52,9 @@ def change_statue(request, esp_id):
     return JsonResponse({'status': 'success'})
 
 
-def test_view(request):
-    return JsonResponse({'status': request.user.is_authenticated})
+def esp_token(request):
+    token = token_urlsafe(16)
+    esp = get_object_or_404(Esp, user=request.user)
+    esp.token = token
+    esp.save()
+    return JsonResponse({'token': token})

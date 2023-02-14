@@ -15,23 +15,27 @@ class Esp(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
                              on_delete=models.CASCADE, )
 
+    @staticmethod
+    def give_esp_statue(token):
+        esp = Esp.objects.get(token=token)
+        data = {'statue': esp.status}
+
+        return data
+
 
 @receiver(post_save, sender=Esp)
 def handle_post_save(sender, instance, **kwargs):
+    if instance.pk is None:
+        # new instance, nothing to do
+        return
     # get the channel layer
-    channel_layer = get_channel_layer()
 
+    channel_layer = get_channel_layer()
     # construct the channel name
     channel_name = 'esp_%s' % instance.token
-
     # construct the message payload
-    payload = {
-        "type": "my.message",
-        "data": {
-            "id": instance.id,
-            # add any other fields that you want to include in the message
-        },
-    }
-
+    data = instance.give_esp_statue(token=instance.token)
+    data['type'] = 'statue_updated'
+    print('sending....')
     # send the message to the channel
-    async_to_sync(channel_layer.group_send)(channel_name, payload)
+    async_to_sync(channel_layer.group_send)(channel_name, data)
