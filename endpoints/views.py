@@ -1,3 +1,4 @@
+import json
 from secrets import token_urlsafe
 from django.contrib.auth import authenticate, login
 from django.http import JsonResponse
@@ -10,7 +11,7 @@ from endpoints.models import Esp
 
 @csrf_exempt
 def index(request):
-    if not request.user.is_authenticated:
+    if request.user.is_authenticated:
         if request.method == 'GET':
             token = token_urlsafe(16)
             esp = Esp.objects.filter(user=request.user).first()
@@ -29,19 +30,25 @@ def login_view(request):
     if request.user.is_authenticated:
         return redirect('index')
     if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
+        json_data = json.loads(request.body)
+        # Access the JSON data like a Python dictionary
+        username = json_data['username']
+        password = json_data['password']
+        print(username,password)
         user = authenticate(request, username=username, password=password)
+        print(user.id)
         if user is not None:
-            login(request, user)
-            return redirect('index')
-        else:
-            error_message = 'Invalid username or password.'
+            token = token_urlsafe(16)
+            print(token)
+            esp = get_object_or_404(Esp,id=user.id)
+            esp.token = token
+            esp.save()
+            response_data = {'status': 'success', 'message': f'{token}'}
+            return JsonResponse(response_data)
     else:
-        error_message = None
-
-    context = {'error_message': error_message}
-    return render(request, 'endpoints/login.html', context)
+        # If the request method is not POST, return a JSON response with an error message
+        response_data = {'status': 'error', 'message': 'Invalid request method'}
+        return JsonResponse(response_data, status=405)
 
 
 @csrf_exempt

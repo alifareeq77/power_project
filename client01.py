@@ -58,9 +58,4 @@ def on_open(ws):
 
 
 websocket.enableTrace(True)
-ws = websocket.WebSocketApp(f"ws://localhost:8000/ws/esp/{token}/",
-                            on_message=on_message,
-                            on_error=on_error,
-                            on_close=on_close)
-ws.on_open = on_open
-ws.run_forever()
+ws = websocket.socket.connect(f"ws://localhost:8000/ws/esp/{token}/")
