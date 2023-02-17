@@ -6,8 +6,11 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.dispatch import Signal
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 
-
+websocket_data = Signal()
 # Create your models here.
 class Esp(models.Model):
     status = models.BooleanField(default=False)

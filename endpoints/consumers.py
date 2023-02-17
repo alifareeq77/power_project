@@ -15,7 +15,14 @@ class ClinicConsumer(AsyncJsonWebsocketConsumer):
         data = Esp.objects.filter(token=token).first().give_esp_statue(token)
         return data
 
+    @database_sync_to_async
+    def get_esp_statuee(self, id_n):
+        data = Esp.objects.filter(id=id_n).first()
+        data = {'statue': data.status}
+        return data
+
     async def connect(self):
+
         self.token = self.scope['url_route']['kwargs']['room_id']
         self.token_group = 'esp_%s' % self.token
         self.r_conn = await aioredis.create_redis(
@@ -27,10 +34,7 @@ class ClinicConsumer(AsyncJsonWebsocketConsumer):
         )
         await self.accept()
         await self.channel_layer.group_send(
-            self.token_group, {
-                "type": 'current_statue',
-                "statue": await self.get_esp_statue(self.token),
-            }
+            self.token_group, await self.get_esp_statue(self.token)
         )
 
     async def disconnect(self, close_code):

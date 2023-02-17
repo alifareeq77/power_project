@@ -43,7 +43,8 @@ def on_error(ws, error):
 
 def on_close(ws, *args, **kwargs):
     print(kwargs)
-    print("### closed ###")
+    print("### closed ###"
+
 
 
 def on_open(ws):
