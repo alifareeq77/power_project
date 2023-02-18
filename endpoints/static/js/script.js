@@ -11,6 +11,19 @@ function toggle() {
         button.style.backgroundColor = "#4CAF50";
         status.innerHTML = "OFF";
     }
+    button.disabled = true;
+    button.style.backgroundColor = 'gray';
+    // Wait for 2 seconds
+    setTimeout(function () {
+        // Enable the button
+        button.disabled = false;
+        if (button.innerHTML === "TURN ON") {
+            button.style.backgroundColor = "#4CAF50";
+        } else {
+            button.style.backgroundColor = "#f44336";
+        }
+    }, 2000);
+
 }
 
 function check() {
