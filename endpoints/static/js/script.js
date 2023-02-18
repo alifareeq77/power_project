@@ -22,7 +22,7 @@ function toggle() {
         } else {
             button.style.backgroundColor = "#f44336";
         }
-    }, 2000);
+    }, 3000);
 
 }
 
