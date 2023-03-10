@@ -6,7 +6,7 @@ const char* ssid     = "Everything is";
 const char* password = "wtf123wtf";
 const int ledPin = 2;
 char path[] = "ws/esp/-ccbBn_fJY2ZiZ2l9YFLeg/";
-char host[] = "192.168.0.113";
+char host[] = "192.168.0.103";
  
 WebSocketClient webSocketClient;
 WiFiClient client;
@@ -60,6 +60,7 @@ void loop() {
       Serial.println(data);
       if(String(data) == "True"){digitalWrite(ledPin, HIGH);}
       else{digitalWrite(ledPin, LOW);}
+     //TODO اكو ايرور تصير سوي دكمة للريكونكت
       
     }
  
